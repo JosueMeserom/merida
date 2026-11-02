@@ -91,7 +91,8 @@ export function crearAddon({ token, fuente, nombre = 'Mérida', etiqueta, modo }
         return { status: 502, datos: { error: 'No se ha podido leer la colección.' } };
       });
       // El token abre el catálogo: no se escribe en el registro.
-      console.log(`${req.method} ${ruta.replace(token, '…')} ${status}`);
+      const quien = `${req.headers['x-forwarded-for'] ?? '-'} "${(req.headers['user-agent'] ?? '-').slice(0, 70)}"`;
+      console.log(`${req.method} ${ruta.replace(token, '…')} ${status} ${quien}${datos.streams ? ` streams=${datos.streams.length}` : ''}`);
       res.writeHead(status, cabeceras).end(JSON.stringify(datos));
     },
   };
