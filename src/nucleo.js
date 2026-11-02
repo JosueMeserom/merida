@@ -102,6 +102,7 @@ export function aStream(a, { etiqueta = '🏠 Mérida', modo = 'proxy' } = {}) {
 /** Dónde va un archivo; null si no es un vídeo de la colección. */
 export function clasificar(a) {
   if (!VIDEO.test(a.nombre)) return null;
+  if (a.tamano === 0) return null; // el hueco que deja OneDrive mientras hay una subida a medias
   const carpetas = a.ruta.split('/').slice(0, -1);
   if (carpetas.some((c) => c.startsWith('.'))) return null; // carpetas ocultas: pruebas y demás
   const datos = carpetas.map(datosCarpeta).findLast(Boolean);

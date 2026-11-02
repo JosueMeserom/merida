@@ -46,6 +46,7 @@ test('clasificar: serie o peli por la estructura, y lo que se queda fuera', () =
   assert.equal(c('Pelis/sin id/P.mkv'), null);
   assert.equal(c('Series/T [tt5675620]/Temporada 01/making-of.mkv'), null, 'extra en una temporada');
   assert.equal(c('.pruebas/T [tt5675620]/T.S01E01.mkv'), null, 'carpetas ocultas fuera');
+  assert.equal(clasificar({ ruta: 'T [tt5675620]/T.S01E01.mkv', nombre: 'T.S01E01.mkv', tamano: 0 }), null, 'subida a medias: 0 bytes');
 });
 
 test('stream: nombre, calidad y audio, URL estable, y las pistas para Stremio', () => {
