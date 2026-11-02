@@ -150,3 +150,9 @@ test('manifest: el logo es una URL absoluta, de la dirección por la que se ha p
   const { datos } = await addon.responder('GET', '/secreto/manifest.json', undefined, 'https://m.example');
   assert.equal(datos.logo, 'https://m.example/logo.png');
 });
+
+test('recién arrancado: la primera petición espera a la primera lectura', async () => {
+  const { addon } = addonDePrueba();
+  addon.refrescar();
+  assert.equal((await addon.responder('GET', '/secreto/catalog/movie/merida-pelis.json')).datos.metas.length, 2);
+});

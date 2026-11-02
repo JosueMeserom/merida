@@ -66,6 +66,8 @@ export function crearAddon({ token, fuente, nombre = 'Mérida', etiqueta, modo }
     if (metodo !== 'GET' || !t || !iguales(t, token)) return { status: 404, datos: { error: 'No existe.' } };
     // El logo tiene que ser una URL absoluta, y este servidor solo sabe su dirección por la petición.
     if (recurso === 'manifest.json') return { status: 200, datos: { ...manifest, ...(base && { logo: `${base}/logo.png` }) } };
+    // Recién arrancado aún no hay índice: mejor esperar la primera lectura que decir que no hay nada.
+    if (!listo) await curso.catch(() => {});
     const id = decodeURIComponent(resto ?? '').replace(/\.json$/, '');
     if (recurso === 'catalog') return { status: 200, datos: { metas: indice.catalogos[tipo] ?? [] } };
     if (recurso === 'stream') return { status: 200, datos: { streams: indice.streams.get(id) ?? [] } };
