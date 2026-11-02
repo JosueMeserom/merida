@@ -53,14 +53,14 @@ test('stream: nombre, calidad y audio, URL estable, y las pistas para Stremio', 
   const a = { nombre: 'T.S01E02.mkv', ruta: 'x', url: 'https://s.example/id/1/f/T.mkv', tamano: 5.2e9, descripcion: 'ancho=3840;alto=2160;video=hevc;hdr=hdr10;audio=spa,eng,und' };
   const s = aStream(a, { etiqueta: '🏠 Toto' });
   assert.equal(s.name, '🏠 Toto');
-  assert.equal(s.description, '2160p · HEVC · HDR10 · 5,2 GB\n🔊 Español, Inglés');
-  assert.equal(s.title, s.description);
+  assert.equal(s.title, '2160p · HEVC · HDR10 · 5,2 GB\n🔊 Español, Inglés');
+  assert.ok(!('description' in s), 'con los dos, las apps nuevas descartan la respuesta');
   assert.equal(s.url, a.url);
   assert.deepEqual(s.behaviorHints, { notWebReady: true, bingeGroup: 'merida-2160p', filename: 'T.S01E02.mkv', videoSize: 5.2e9 });
   assert.equal(aStream(a, { modo: 'redirect' }).url, a.url + '?m=redirect');
   // Sin descripción: lo que midió Microsoft y el nombre; sin idiomas, sin línea de audio.
   const b = aStream({ nombre: 'P.x265.mkv', ruta: 'x', url: 'u', video: { width: 1920, height: 1080 } });
-  assert.equal(b.description, '1080p · HEVC');
+  assert.equal(b.title, '1080p · HEVC');
   assert.equal(aStream({ nombre: 'P.mkv', ruta: 'x', url: 'u' }).behaviorHints.bingeGroup, 'merida-sin-calidad');
 });
 

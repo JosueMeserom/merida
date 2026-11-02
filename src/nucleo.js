@@ -83,8 +83,9 @@ export function aStream(a, { etiqueta = '🏠 Mérida', modo = 'proxy' } = {}) {
   const texto = lineas.join('\n');
   return {
     name: etiqueta,
-    // `title` está de salida en favor de `description`, pero las apps antiguas solo leen el primero.
-    description: texto,
+    // Solo uno de los dos: en las apps nuevas `title` es un alias de `description`, y
+    // mandar ambos es un campo duplicado que hace descartar la respuesta entera. Este
+    // lo leen todas; las antiguas no conocen el otro.
     title: texto,
     url: a.url + (modo === 'redirect' ? '?m=redirect' : ''),
     behaviorHints: {
