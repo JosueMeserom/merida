@@ -1,6 +1,6 @@
 {
   "name": "merida",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Addon de Stremio para ver tu colección de series y pelis guardada en OneDrive, a través de Segovia",
   "type": "module",
   "private": true,

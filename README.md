@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/icon.svg" width="120" alt="Mérida">
+</p>
+
 # 🏛️ Mérida
 
 Addon de [Stremio](https://www.stremio.com/) para ver **tu propia colección de series y pelis**, guardada en tu OneDrive, desde cualquier dispositivo de tu cuenta: la tele de tu madre, el móvil, el PC.

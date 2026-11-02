@@ -5,12 +5,14 @@
  *   /<token>/catalog/<tipo>/<id>.json
  *   /<token>/stream/<tipo>/<id>.json
  *   POST /refrescar   con `Authorization: Bearer <clave de Segovia>`
+ *   /logo.png
  */
 import { readFileSync } from 'node:fs';
 import { timingSafeEqual } from 'node:crypto';
 import { indexar } from './nucleo.js';
 
 const { version } = JSON.parse(readFileSync(new URL('../package.json', import.meta.url)));
+const LOGO = readFileSync(new URL('../assets/logo.png', import.meta.url));
 
 function iguales(a, b) {
   const x = Buffer.from(a);
@@ -52,7 +54,7 @@ export function crearAddon({ token, fuente, nombre = 'Mérida', etiqueta, modo }
   };
 
   /** @returns {{ status: number, datos: any }} */
-  async function responder(metodo, ruta, autorizacion) {
+  async function responder(metodo, ruta, autorizacion, base) {
     if (ruta === '/refrescar') {
       if (metodo !== 'POST') return { status: 405, datos: { error: 'Solo POST.' } };
       const clave = autorizacion?.match(/^Bearer (.+)$/)?.[1];
@@ -62,7 +64,8 @@ export function crearAddon({ token, fuente, nombre = 'Mérida', etiqueta, modo }
     }
     const [, t, recurso, tipo, resto] = ruta.split('/');
     if (metodo !== 'GET' || !t || !iguales(t, token)) return { status: 404, datos: { error: 'No existe.' } };
-    if (recurso === 'manifest.json') return { status: 200, datos: manifest };
+    // El logo tiene que ser una URL absoluta, y este servidor solo sabe su dirección por la petición.
+    if (recurso === 'manifest.json') return { status: 200, datos: { ...manifest, ...(base && { logo: `${base}/logo.png` }) } };
     const id = decodeURIComponent(resto ?? '').replace(/\.json$/, '');
     if (recurso === 'catalog') return { status: 200, datos: { metas: indice.catalogos[tipo] ?? [] } };
     if (recurso === 'stream') return { status: 200, datos: { streams: indice.streams.get(id) ?? [] } };
@@ -79,7 +82,9 @@ export function crearAddon({ token, fuente, nombre = 'Mérida', etiqueta, modo }
       const cabeceras = { 'content-type': 'application/json; charset=utf-8', 'access-control-allow-origin': '*', 'access-control-allow-headers': '*', 'cache-control': 'no-store' };
       if (req.method === 'OPTIONS') return res.writeHead(204, cabeceras).end();
       const ruta = new URL(req.url, 'http://x').pathname;
-      const { status, datos } = await responder(req.method, ruta, req.headers.authorization).catch((e) => {
+      if (ruta === '/logo.png') return res.writeHead(200, { 'content-type': 'image/png', 'access-control-allow-origin': '*', 'cache-control': 'max-age=86400' }).end(LOGO);
+      const base = `${req.headers['x-forwarded-proto'] ?? 'http'}://${req.headers.host}`;
+      const { status, datos } = await responder(req.method, ruta, req.headers.authorization, base).catch((e) => {
         console.error(e);
         return { status: 502, datos: { error: 'No se ha podido leer la colección.' } };
       });

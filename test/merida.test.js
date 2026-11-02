@@ -144,3 +144,9 @@ test('refrescar en plena lectura vuelve a leer: esa lectura ya no vería lo reci
   assert.equal(lecturas, 2);
   assert.equal((await addon.responder('GET', '/secreto/catalog/movie/merida-pelis.json')).datos.metas.length, 2);
 });
+
+test('manifest: el logo es una URL absoluta, de la dirección por la que se ha pedido', async () => {
+  const { addon } = addonDePrueba();
+  const { datos } = await addon.responder('GET', '/secreto/manifest.json', undefined, 'https://m.example');
+  assert.equal(datos.logo, 'https://m.example/logo.png');
+});
