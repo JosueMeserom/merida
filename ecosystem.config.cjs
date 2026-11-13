@@ -13,7 +13,9 @@ module.exports = {
       exec_mode: 'fork',
       instances: 1,
       node_args: '--env-file-if-exists=.env',
-      max_memory_restart: '128M',
+      // Node 26 ocupa unos 30 MB más por proceso que Node 20 a ojos de pm2 (casi todo es el propio
+      // binario, compartido entre servicios). En reposo ronda los 100 MB: con 128M quedaba justo.
+      max_memory_restart: '192M',
       out_file: 'logs/merida.out.log',
       error_file: 'logs/merida.err.log',
       merge_logs: true,
