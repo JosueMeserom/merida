@@ -12,7 +12,9 @@ module.exports = {
       cwd: __dirname,
       exec_mode: 'fork',
       instances: 1,
-      node_args: '--env-file-if-exists=.env',
+      // --optimize-for-size: V8 recoge basura antes en vez de dejar crecer la memoria. Medido con
+      // Node 26: el pico bajo carga baja sin perder velocidad. Vale igual con Node 20.
+      node_args: '--env-file-if-exists=.env --optimize-for-size',
       // Node 26 ocupa unos 30 MB más por proceso que Node 20 a ojos de pm2 (casi todo es el propio
       // binario, compartido entre servicios). En reposo ronda los 100 MB: con 128M quedaba justo.
       max_memory_restart: '192M',
